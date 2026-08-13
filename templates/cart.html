@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}Shopping Cart - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">Cart</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        {% if cart_items %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-items">
+                    <div class="cart-header">
+                        <div class="row">
+                            <div class="col-md-5">Product</div>
+                            <div class="col-md-2 text-center">Price</div>
+                            <div class="col-md-2 text-center">Quantity</div>
+                            <div class="col-md-2 text-center">Total</div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </div>
+                    {% for item in cart_items %}
+                    <div class="cart-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <div class="cart-product">
+                                    <img src="{{ url_for('static', filename=item.product.get_primary_image()) }}" alt="{{ item.product.name }}">
+                                    <div class="cart-product-info">
+                                        <h6><a href="{{ url_for('products.product_detail', slug=item.product.slug) }}">{{ item.product.name }}</a></h6>
+                                        <span class="cart-product-category">{{ item.product.category.name }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <span class="cart-price">Rs. {{ "%.2f"|format(item.product.discount_price or item.product.price) }}</span>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <form action="{{ url_for('cart.update_cart', item_id=item.id) }}" method="POST" class="cart-qty-form">
+                                    <div class="quantity-control">
+                                        <button type="button" class="qty-btn" onclick="updateCartQty(this, -1)">-</button>
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}" readonly class="qty-input">
+                                        <button type="button" class="qty-btn" onclick="updateCartQty(this, 1)">+</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <span class="cart-total">Rs. {{ "%.2f"|format(item.get_total()) }}</span>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <a href="{{ url_for('cart.remove_from_cart', item_id=item.id) }}" class="btn btn-remove" onclick="return confirm('Remove this item?')">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h5>Cart Summary</h5>
+                    
+                    {% if session.get('coupon_code') %}
+                    <div class="applied-coupon">
+                        <span>Coupon: <strong>{{ session.get('coupon_code') }}</strong></span>
+                        <a href="{{ url_for('cart.remove_coupon') }}" class="btn btn-sm btn-danger">Remove</a>
+                    </div>
+                    {% endif %}
+                    
+                    <form action="{{ url_for('cart.apply_coupon') }}" method="POST" class="coupon-form">
+                        <div class="input-group">
+                            <input type="text" name="coupon_code" class="form-control" placeholder="Enter coupon code">
+                            <button class="btn btn-purple" type="submit">Apply</button>
+                        </div>
+                    </form>
+                    
+                    <div class="summary-item">
+                        <span>Subtotal</span>
+                        <span>Rs. {{ "%.2f"|format(subtotal) }}</span>
+                    </div>
+                    {% if discount > 0 %}
+                    <div class="summary-item text-success">
+                        <span>Discount</span>
+                        <span>-Rs. {{ "%.2f"|format(discount) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="summary-item">
+                        <span>Shipping</span>
+                        <span>{% if shipping == 0 %}Free{% else %}Rs. {{ "%.2f"|format(shipping) }}{% endif %}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Tax (5%)</span>
+                        <span>Rs. {{ "%.2f"|format(tax) }}</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Grand Total</span>
+                        <span>Rs. {{ "%.2f"|format(grand_total) }}</span>
+                    </div>
+                    
+                    <a href="{{ url_for('cart.checkout') }}" class="btn btn-purple btn-lg w-100 mb-2">
+                        <i class="fas fa-lock me-2"></i>Proceed to Checkout
+                    </a>
+                    <a href="{{ url_for('products.shop') }}" class="btn btn-outline-purple w-100">
+                        <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-cart text-center py-5">
+            <i class="fas fa-shopping-bag fa-5x text-muted mb-4"></i>
+            <h3>Your Cart is Empty</h3>
+            <p class="text-muted">Looks like you haven't added any products yet.</p>
+            <a href="{{ url_for('products.shop') }}" class="btn btn-purple btn-lg mt-3">
+                <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateCartQty(btn, delta) {
+    const input = btn.parentElement.querySelector('.qty-input');
+    const form = btn.closest('.cart-qty-form');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    const max = parseInt(input.max);
+    if (val > max) val = max;
+    input.value = val;
+    
+    // Submit form
+    const formData = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {'X-Requested-With': 'XMLHttpRequest'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

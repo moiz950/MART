@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile - AA MART{% endblock %}
+
+{% block content %}
+<div class="page-banner">
+    <div class="container">
+        <h1>Edit Profile</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('customer.profile') }}">My Account</a></li>
+                <li class="breadcrumb-item active">Edit Profile</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="auth-card">
+                    <div class="auth-card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
+                            <div class="text-center mb-4">
+                                {% if current_user.avatar %}
+                                <img src="{{ url_for('static', filename=current_user.avatar) }}" class="rounded-circle" style="width:100px;height:100px;object-fit:cover;">
+                                {% else %}
+                                <i class="fas fa-user-circle fa-5x text-purple"></i>
+                                {% endif %}
+                                <div class="mt-2">
+                                    <label class="btn btn-sm btn-outline-purple">
+                                        Change Photo {{ form.avatar(style="display:none;") }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Full Name</label>
+                                    {{ form.full_name(class="form-control") }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phone</label>
+                                    {{ form.phone(class="form-control") }}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-purple w-100">Update Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

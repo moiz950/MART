@@ -1,0 +1,57 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Reviews - AA MART Admin{% endblock %}
+{% block page_title %}Product Reviews{% endblock %}
+
+{% block admin_content %}
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Customer</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('products.product_detail', slug=review.product.slug) }}" target="_blank">
+                            {{ review.product.name[:40] }}{% if review.product.name|length > 40 %}...{% endif %}
+                        </a>
+                    </td>
+                    <td>{{ review.user.full_name }}</td>
+                    <td>
+                        {% for i in range(5) %}
+                        <i class="fas fa-star{% if i < review.rating %} text-warning{% else %} text-muted{% endif %}"></i>
+                        {% endfor %}
+                    </td>
+                    <td>{{ review.comment[:60] }}{% if review.comment|length > 60 %}...{% endif %}</td>
+                    <td>{{ review.created_at.strftime('%d %b %Y') }}</td>
+                    <td>
+                        {% if review.is_approved %}
+                        <span class="badge bg-success">Approved</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not review.is_approved %}
+                        <a href="{{ url_for('admin.approve_review', id=review.id) }}" class="btn btn-admin-sm btn-success"><i class="fas fa-check"></i></a>
+                        {% endif %}
+                        <a href="{{ url_for('admin.delete_review', id=review.id) }}" class="btn btn-admin-sm btn-danger" onclick="return confirm('Delete this review?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="text-center py-4">No reviews yet</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Customer Detail - AA MART Admin{% endblock %}
+{% block page_title %}Customer: {{ customer.full_name }}{% endblock %}
+
+{% block admin_content %}
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="admin-card">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    {% if customer.avatar %}
+                    <img src="{{ url_for('static', filename=customer.avatar) }}" class="rounded-circle" style="width:100px;height:100px;object-fit:cover;">
+                    {% else %}
+                    <i class="fas fa-user-circle fa-5x text-purple"></i>
+                    {% endif %}
+                </div>
+                <h5>{{ customer.full_name }}</h5>
+                <p class="text-muted mb-1">@{{ customer.username }}</p>
+                <p class="text-muted">{{ customer.email }}</p>
+                {% if customer.phone %}<p><i class="fas fa-phone me-2"></i>{{ customer.phone }}</p>{% endif %}
+                <p class="small text-muted">Joined: {{ customer.created_at.strftime('%d %b %Y') }}</p>
+                <span class="badge bg-{{ 'success' if customer.is_active else 'danger' }}">{{ 'Active' if customer.is_active else 'Inactive' }}</span>
+                {% if customer.is_verified %}<span class="badge bg-info">Verified</span>{% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="admin-card">
+            <div class="card-header"><h5 class="mb-0">Orders ({{ orders|length }})</h5></div>
+            <div class="card-body p-0">
+                <table class="table-admin">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.order_number }}</td>
+                            <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+                            <td>{{ order.items|sum(attribute='quantity') }}</td>
+                            <td>Rs. {{ "%.0f"|format(order.grand_total) }}</td>
+                            <td><span class="badge bg-{{ 'success' if order.status == 'delivered' else 'warning' if order.status == 'pending' else 'info' if order.status == 'shipped' else 'danger' }}">{{ order.status }}</span></td>
+                            <td><a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-admin-sm"><i class="fas fa-eye"></i></a></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="text-center py-4">No orders yet</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

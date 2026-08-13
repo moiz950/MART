@@ -1,0 +1,32 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Customers - AA MART Admin{% endblock %}
+{% block page_title %}Customer Management{% endblock %}
+
+{% block admin_content %}
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for customer in customers.items %}
+                <tr>
+                    <td>{{ customer.full_name or customer.username }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.phone or 'N/A' }}</td>
+                    <td>{{ customer.orders.count() }}</td>
+                    <td>{{ customer.created_at.strftime('%d %b %Y') }}</td>
+                    <td><a href="{{ url_for('admin.customer_detail', id=customer.id) }}" class="btn btn-admin-sm"><i class="fas fa-eye"></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if customers.pages > 1 %}
+<nav><ul class="pagination justify-content-center">
+    {% for p in customers.iter_pages() %}
+    {% if p %}<li class="page-item {% if p == customers.page %}active{% endif %}"><a class="page-link" href="{{ url_for('admin.customers', page=p) }}">{{ p }}</a></li>{% endif %}
+    {% endfor %}
+</ul></nav>
+{% endif %}
+{% endblock %}

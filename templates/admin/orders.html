@@ -1,0 +1,42 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Orders - AA MART Admin{% endblock %}
+{% block page_title %}Order Management{% endblock %}
+
+{% block admin_content %}
+<div class="mb-3">
+    <a href="{{ url_for('admin.orders') }}" class="btn btn-admin-sm {% if not current_status %}active{% endif %}">All</a>
+    <a href="{{ url_for('admin.orders', status='pending') }}" class="btn btn-outline-admin btn-admin-sm">Pending</a>
+    <a href="{{ url_for('admin.orders', status='confirmed') }}" class="btn btn-outline-admin btn-admin-sm">Confirmed</a>
+    <a href="{{ url_for('admin.orders', status='processing') }}" class="btn btn-outline-admin btn-admin-sm">Processing</a>
+    <a href="{{ url_for('admin.orders', status='shipped') }}" class="btn btn-outline-admin btn-admin-sm">Shipped</a>
+    <a href="{{ url_for('admin.orders', status='delivered') }}" class="btn btn-outline-admin btn-admin-sm">Delivered</a>
+    <a href="{{ url_for('admin.orders', status='cancelled') }}" class="btn btn-outline-admin btn-admin-sm">Cancelled</a>
+</div>
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for order in orders.items %}
+                <tr>
+                    <td>{{ order.order_number }}</td>
+                    <td>{{ order.customer_name or order.user.email }}</td>
+                    <td>Rs. {{ "%.0f"|format(order.grand_total) }}</td>
+                    <td><span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}info{% endif %}">{{ order.status }}</span></td>
+                    <td>{{ order.payment_status }}</td>
+                    <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+                    <td><a href="{{ url_for('admin.order_detail', id=order.id) }}" class="btn btn-admin-sm"><i class="fas fa-eye"></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if orders.pages > 1 %}
+<nav><ul class="pagination justify-content-center">
+    {% for p in orders.iter_pages() %}
+    {% if p %}<li class="page-item {% if p == orders.page %}active{% endif %}"><a class="page-link" href="{{ url_for('admin.orders', page=p, status=current_status) }}">{{ p }}</a></li>{% endif %}
+    {% endfor %}
+</ul></nav>
+{% endif %}
+{% endblock %}

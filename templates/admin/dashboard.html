@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - AA MART{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="{{ url_for('admin.dashboard') }}" class="sidebar-logo">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>AA MART</span>
+                    <small>Admin</small>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="{{ url_for('admin.orders') }}" class="{% if 'orders' in request.endpoint %}active{% endif %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                    <li><a href="{{ url_for('admin.products') }}" class="{% if 'products' in request.endpoint and 'admin' in request.endpoint %}active{% endif %}"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a href="{{ url_for('admin.categories') }}"><i class="fas fa-th-large"></i> Categories</a></li>
+                    <li><a href="{{ url_for('admin.brands') }}"><i class="fas fa-certificate"></i> Brands</a></li>
+                    <li><a href="{{ url_for('admin.suppliers') }}"><i class="fas fa-truck"></i> Suppliers</a></li>
+                    <li><a href="{{ url_for('admin.customers') }}"><i class="fas fa-users"></i> Customers</a></li>
+                    <li><a href="{{ url_for('admin.coupons') }}"><i class="fas fa-tag"></i> Coupons</a></li>
+                    <li><a href="{{ url_for('admin.reviews') }}"><i class="fas fa-star"></i> Reviews</a></li>
+                    <li><a href="{{ url_for('admin.inventory') }}"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                    <li><a href="{{ url_for('admin.reports') }}"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                    <li><a href="{{ url_for('admin.messages') }}"><i class="fas fa-envelope"></i> Messages {% if total_messages > 0 %}<span class="badge bg-danger">{{ total_messages }}</span>{% endif %}</a></li>
+                    <li><a href="{{ url_for('admin.subscribers') }}"><i class="fas fa-bell"></i> Subscribers</a></li>
+                    <li><a href="{{ url_for('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="{{ url_for('admin.theme_settings') }}"><i class="fas fa-paint-brush"></i> Theme</a></li>
+                    <li><a href="{{ url_for('admin.activity_logs') }}"><i class="fas fa-history"></i> Activity Logs</a></li>
+                    <li><hr></li>
+                    <li><a href="{{ url_for('index') }}"><i class="fas fa-globe"></i> View Website</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="admin-content">
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h4>{% block page_title %}Dashboard{% endblock %}</h4>
+                </div>
+                <div class="header-right">
+                    <span>Welcome, {{ current_user.full_name }}</span>
+                </div>
+            </header>
+            
+            <div class="admin-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                
+                {% block admin_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+{% block admin_content %}
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card purple">
+            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-info">
+                <h3>Rs. {{ "%.0f"|format(total_revenue) }}</h3>
+                <span>Total Revenue</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card blue">
+            <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_orders }}</h3>
+                <span>Total Orders</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card green">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_users }}</h3>
+                <span>Total Users</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card orange">
+            <div class="stat-icon"><i class="fas fa-box"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_products }}</h3>
+                <span>Total Products</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card-sm">
+            <span>Pending Orders</span>
+            <h4>{{ pending_orders }}</h4>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card-sm">
+            <span>Low Stock Items</span>
+            <h4 class="text-danger">{{ low_stock }}</h4>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card-sm">
+            <span>New Messages</span>
+            <h4 class="text-warning">{{ total_messages }}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5>Sales Overview</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="salesChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="admin-card">
+            <div class="card-header">
+                <h5>Recent Orders</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="recent-orders">
+                    {% for order in recent_orders %}
+                    <div class="recent-order-item">
+                        <div class="order-info">
+                            <strong>#{{ order.order_number }}</strong>
+                            <span>Rs. {{ "%.0f"|format(order.grand_total) }}</span>
+                        </div>
+                        <span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}info{% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const salesData = {{ monthly_sales|safe }};
+const ctx = document.getElementById('salesChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: salesData.map(d => d.month),
+        datasets: [{
+            label: 'Sales (Rs)',
+            data: salesData.map(d => d.sales),
+            borderColor: '#6A1B9A',
+            backgroundColor: 'rgba(106, 27, 154, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

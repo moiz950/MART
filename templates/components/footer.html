@@ -1,0 +1,111 @@
+<!-- Footer -->
+<footer class="main-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="footer-widget">
+                    <div class="footer-logo">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>AA MART</span>
+                    </div>
+                    <p class="footer-desc">AA MART is your one-stop destination for all your shopping needs. From groceries to electronics, fashion to home decor, we offer everything at the best prices with premium quality.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 mb-4">
+                <div class="footer-widget">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('products.shop') }}">Shop</a></li>
+                        <li><a href="{{ url_for('products.deals') }}">Today's Deals</a></li>
+                        <li><a href="{{ url_for('products.new_arrivals') }}">New Arrivals</a></li>
+                        <li><a href="{{ url_for('products.best_sellers') }}">Best Sellers</a></li>
+                        <li><a href="{{ url_for('brands') }}">Brands</a></li>
+                        <li><a href="{{ url_for('offers') }}">Offers</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 mb-4">
+                <div class="footer-widget">
+                    <h5>Categories</h5>
+                    <ul class="footer-links">
+                        {% for cat in categories[:8] %}
+                        <li><a href="{{ url_for('products.category', slug=cat.slug) }}">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 mb-4">
+                <div class="footer-widget">
+                    <h5>Customer Service</h5>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                        <li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li>
+                        <li><a href="{{ url_for('terms_conditions') }}">Terms & Conditions</a></li>
+                        <li><a href="{{ url_for('return_policy') }}">Return Policy</a></li>
+                        <li><a href="{{ url_for('shipping_policy') }}">Shipping Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-6 mb-4">
+                <div class="footer-widget">
+                    <h5>Contact Info</h5>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-map-marker-alt"></i> AA MART, Karachi, Pakistan</li>
+                        <li><i class="fas fa-phone-alt"></i> 021-111-AA-MART</li>
+                        <li><i class="fas fa-envelope"></i> info@aamart.com</li>
+                        <li><i class="fas fa-clock"></i> Mon - Sat: 9:00 AM - 10:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-newsletter">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h5>Subscribe to Our Newsletter</h5>
+                    <p>Get latest updates and offers directly in your inbox</p>
+                </div>
+                <div class="col-lg-6">
+                    <form action="{{ url_for('subscribe') }}" method="POST" class="newsletter-form">
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                            <button class="btn btn-subscribe" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="copyright">&copy; {{ now.year }} AA MART. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <img src="{{ url_for('static', filename='images/payment-methods.png') }}" alt="Payment Methods" class="payment-methods">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to Top -->
+<button id="backToTop" class="btn btn-back-to-top">
+    <i class="fas fa-arrow-up"></i>
+</button>

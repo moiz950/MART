@@ -1,0 +1,57 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Inventory - AA MART Admin{% endblock %}
+{% block page_title %}Low Stock Inventory{% endblock %}
+
+{% block admin_content %}
+<div class="alert alert-warning">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    Showing products with stock at or below minimum stock level.
+</div>
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+                    <th>SKU</th>
+                    <th>Current Stock</th>
+                    <th>Min Stock</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td><img src="{{ url_for('static', filename=product.get_primary_image()) }}" class="img-preview"></td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.sku }}</td>
+                    <td class="fw-bold {% if product.stock == 0 %}text-danger{% elif product.stock <= product.min_stock %}text-warning{% endif %}">
+                        {{ product.stock }}
+                    </td>
+                    <td>{{ product.min_stock }}</td>
+                    <td>
+                        {% if product.stock == 0 %}
+                        <span class="badge bg-danger">Out of Stock</span>
+                        {% elif product.stock <= product.min_stock %}
+                        <span class="badge bg-warning">Low Stock</span>
+                        {% else %}
+                        <span class="badge bg-success">In Stock</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_product', id=product.id) }}" class="btn btn-admin-sm"><i class="fas fa-edit"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="text-center py-4">
+                    <i class="fas fa-check-circle fa-3x text-success mb-2"></i>
+                    <p>All products are well-stocked!</p>
+                </td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

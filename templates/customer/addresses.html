@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}My Addresses - AA MART{% endblock %}
+
+{% block content %}
+<div class="page-banner">
+    <div class="container">
+        <h1>My Addresses</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('customer.profile') }}">My Account</a></li>
+                <li class="breadcrumb-item active">Addresses</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <div class="profile-user">
+                        <i class="fas fa-user-circle fa-4x text-purple"></i>
+                        <h5>{{ current_user.full_name }}</h5>
+                        <p>{{ current_user.email }}</p>
+                    </div>
+                    <ul class="profile-nav">
+                        <li><a href="{{ url_for('customer.profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a href="{{ url_for('customer.orders') }}"><i class="fas fa-shopping-bag me-2"></i>Orders</a></li>
+                        <li><a href="{{ url_for('customer.addresses') }}" class="active"><i class="fas fa-map-marker-alt me-2"></i>Addresses</a></li>
+                        <li><a href="{{ url_for('customer.notifications') }}"><i class="fas fa-bell me-2"></i>Notifications</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Saved Addresses</h4>
+                    <a href="{{ url_for('customer.add_address') }}" class="btn btn-purple"><i class="fas fa-plus me-2"></i>Add Address</a>
+                </div>
+                
+                {% if addresses %}
+                <div class="row">
+                    {% for address in addresses %}
+                    <div class="col-md-6 mb-3">
+                        <div class="address-card {% if address.is_default %}border-purple{% endif %}">
+                            <div class="address-card-body">
+                                <div class="d-flex justify-content-between">
+                                    <h6>{{ address.label }}</h6>
+                                    {% if address.is_default %}<span class="badge bg-purple">Default</span>{% endif %}
+                                </div>
+                                <p class="mb-1">{{ address.full_name }}</p>
+                                <p class="mb-1">{{ address.phone }}</p>
+                                <p class="mb-1">{{ address.address_line1 }}</p>
+                                {% if address.address_line2 %}<p class="mb-1">{{ address.address_line2 }}</p>{% endif %}
+                                <p class="mb-1">{{ address.city }}, {{ address.state }} {{ address.zip_code }}</p>
+                                <p>{{ address.country }}</p>
+                                <div class="mt-2">
+                                    <a href="{{ url_for('customer.edit_address', id=address.id) }}" class="btn btn-sm btn-outline-purple"><i class="fas fa-edit"></i></a>
+                                    <a href="{{ url_for('customer.delete_address', id=address.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this address?')"><i class="fas fa-trash"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-map-marker-alt fa-4x text-muted mb-3"></i>
+                    <p>No addresses saved yet.</p>
+                    <a href="{{ url_for('customer.add_address') }}" class="btn btn-purple">Add Address</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

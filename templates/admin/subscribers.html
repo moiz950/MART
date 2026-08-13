@@ -1,0 +1,30 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Subscribers - AA MART Admin{% endblock %}
+{% block page_title %}Newsletter Subscribers{% endblock %}
+
+{% block admin_content %}
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Subscribed On</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subscriber in subscribers %}
+                <tr>
+                    <td>{{ subscriber.email }}</td>
+                    <td>{{ subscriber.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                    <td><span class="badge bg-{{ 'success' if subscriber.is_active else 'danger' }}">{{ 'Active' if subscriber.is_active else 'Inactive' }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="text-center py-4">No subscribers yet</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

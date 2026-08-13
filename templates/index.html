@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% block title %}AA MART - Premium Shopping Experience{% endblock %}
+
+{% block content %}
+<!-- Hero Slider -->
+<section class="hero-slider">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="hero-slide" style="background: linear-gradient(135deg, #6A1B9A 0%, #8E24AA 50%, #AB47BC 100%);">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <span class="hero-badge">Welcome to AA MART</span>
+                                    <h1 class="hero-title">Premium Shopping<br>Experience</h1>
+                                    <p class="hero-desc">Discover a world of quality products at unbeatable prices. From groceries to gadgets, we have everything you need.</p>
+                                    <div class="hero-buttons">
+                                        <a href="{{ url_for('products.shop') }}" class="btn btn-light btn-lg hero-btn">Shop Now <i class="fas fa-arrow-right ms-2"></i></a>
+                                        <a href="{{ url_for('products.deals') }}" class="btn btn-outline-light btn-lg hero-btn-outline">View Deals <i class="fas fa-fire ms-2"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-image">
+                                    <i class="fas fa-shopping-cart hero-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="hero-slide" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <span class="hero-badge">Flash Sale</span>
+                                    <h1 class="hero-title">Up to 70% Off<br>On Electronics</h1>
+                                    <p class="hero-desc">Grab the best deals on latest smartphones, laptops, accessories and more. Limited time offer!</p>
+                                    <div class="hero-buttons">
+                                        <a href="{{ url_for('products.shop') }}?category=7" class="btn btn-light btn-lg hero-btn">Shop Electronics <i class="fas fa-arrow-right ms-2"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-image">
+                                    <i class="fas fa-laptop hero-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="hero-slide" style="background: linear-gradient(135deg, #4a148c 0%, #6A1B9A 50%, #7b1fa2 100%);">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6">
+                                <div class="hero-content">
+                                    <span class="hero-badge">New Collection</span>
+                                    <h1 class="hero-title">Fresh & Organic<br>Groceries</h1>
+                                    <p class="hero-desc">Farm-fresh fruits, vegetables, dairy products and more delivered to your doorstep.</p>
+                                    <div class="hero-buttons">
+                                        <a href="{{ url_for('products.shop') }}?category=1" class="btn btn-light btn-lg hero-btn">Shop Grocery <i class="fas fa-arrow-right ms-2"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-none d-lg-block">
+                                <div class="hero-image">
+                                    <i class="fas fa-apple-alt hero-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Features Strip -->
+<section class="features-strip">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <i class="fas fa-truck-fast"></i>
+                    <h6>Free Delivery</h6>
+                    <p>On orders above Rs.500</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <i class="fas fa-shield-halved"></i>
+                    <h6>Secure Payment</h6>
+                    <p>100% secure transactions</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <i class="fas fa-rotate-left"></i>
+                    <h6>Easy Returns</h6>
+                    <p>7-day return policy</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <h6>24/7 Support</h6>
+                    <p>Dedicated customer service</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Shop by Category</h2>
+            <p class="section-desc">Explore our wide range of product categories</p>
+        </div>
+        <div class="row g-3">
+            {% for cat in categories %}
+            <div class="col-lg-2 col-md-3 col-4">
+                <a href="{{ url_for('products.category', slug=cat.slug) }}" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas {{ cat.icon or 'fa-tag' }}"></i>
+                    </div>
+                    <h6 class="category-name">{{ cat.name }}</h6>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Today's Deals -->
+{% if deals %}
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Today's Deals</h2>
+            <p class="section-desc">Limited time offers you don't want to miss</p>
+            <a href="{{ url_for('products.deals') }}" class="btn btn-outline-purple">View All Deals <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+        <div class="product-slider">
+            <div class="row g-3">
+                {% for product in deals %}
+                <div class="col-lg-3 col-md-4 col-6">
+                    <div class="product-card">
+                        <div class="product-badge badge-discount">-{{ product.get_discount_percent() }}%</div>
+                        <div class="product-image">
+                            <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}" loading="lazy">
+                            <div class="product-actions">
+                                <a href="{{ url_for('products.add_to_wishlist', product_id=product.id) }}" class="action-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
+                                <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn" title="Quick View"><i class="fas fa-eye"></i></a>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category">{{ product.category.name }}</span>
+                            <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name }}</a></h6>
+                            <div class="product-rating">
+                                {% for i in range(5) %}
+                                <i class="fas fa-star{% if i < product.rating|int %}{% else %} far fa-star{% endif %}"></i>
+                                {% endfor %}
+                                <span>({{ product.review_count }})</span>
+                            </div>
+                            <div class="product-price">
+                                <span class="current-price">Rs. {{ "%.2f"|format(product.discount_price or product.price) }}</span>
+                                {% if product.discount_price %}
+                                <span class="old-price">Rs. {{ "%.2f"|format(product.price) }}</span>
+                                {% endif %}
+                            </div>
+                            <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Products</h2>
+            <p class="section-desc">Handpicked premium products for you</p>
+            <a href="{{ url_for('products.shop') }}" class="btn btn-outline-purple">View All <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+        <div class="row g-3">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    {% if product.is_new %}<div class="product-badge badge-new">New</div>{% endif %}
+                    {% if product.get_discount_percent() > 0 %}<div class="product-badge badge-discount">-{{ product.get_discount_percent() }}%</div>{% endif %}
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}" loading="lazy">
+                        <div class="product-actions">
+                            <a href="{{ url_for('products.add_to_wishlist', product_id=product.id) }}" class="action-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn" title="Quick View"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category.name }}</span>
+                        <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name }}</a></h6>
+                        <div class="product-rating">
+                            {% for i in range(5) %}
+                            <i class="fas fa-star{% if i < product.rating|int %}{% else %} far fa-star{% endif %}"></i>
+                            {% endfor %}
+                            <span>({{ product.review_count }})</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">Rs. {{ "%.2f"|format(product.discount_price or product.price) }}</span>
+                            {% if product.discount_price %}
+                            <span class="old-price">Rs. {{ "%.2f"|format(product.price) }}</span>
+                            {% endif %}
+                        </div>
+                        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- New Arrivals -->
+{% if new_products %}
+<section class="section-padding bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">New Arrivals</h2>
+            <p class="section-desc">Check out our latest products</p>
+            <a href="{{ url_for('products.new_arrivals') }}" class="btn btn-outline-purple">View All <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+        <div class="row g-3">
+            {% for product in new_products %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    <div class="product-badge badge-new">New</div>
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}" loading="lazy">
+                        <div class="product-actions">
+                            <a href="{{ url_for('products.add_to_wishlist', product_id=product.id) }}" class="action-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn" title="Quick View"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category.name }}</span>
+                        <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name }}</a></h6>
+                        <div class="product-price">
+                            <span class="current-price">Rs. {{ "%.2f"|format(product.discount_price or product.price) }}</span>
+                            {% if product.discount_price %}
+                            <span class="old-price">Rs. {{ "%.2f"|format(product.price) }}</span>
+                            {% endif %}
+                        </div>
+                        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Best Sellers -->
+{% if best_sellers %}
+<section class="section-padding">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Best Sellers</h2>
+            <p class="section-desc">Our most popular products</p>
+            <a href="{{ url_for('products.best_sellers') }}" class="btn btn-outline-purple">View All <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+        <div class="row g-3">
+            {% for product in best_sellers %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    <div class="product-badge badge-seller">Best Seller</div>
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}" loading="lazy">
+                        <div class="product-actions">
+                            <a href="{{ url_for('products.add_to_wishlist', product_id=product.id) }}" class="action-btn" title="Add to Wishlist"><i class="fas fa-heart"></i></a>
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn" title="Quick View"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category.name }}</span>
+                        <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name }}</a></h6>
+                        <div class="product-rating">
+                            {% for i in range(5) %}
+                            <i class="fas fa-star{% if i < product.rating|int %}{% else %} far fa-star{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">Rs. {{ "%.2f"|format(product.discount_price or product.price) }}</span>
+                        </div>
+                        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Brands Strip -->
+<section class="brands-strip">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Top Brands</h2>
+        </div>
+        <div class="brand-slider">
+            <div class="row g-3 align-items-center">
+                {% for brand in brands %}
+                <div class="col-lg-2 col-md-3 col-4">
+                    <div class="brand-card">
+                        <img src="{{ url_for('static', filename=brand.logo) }}" alt="{{ brand.name }}">
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-wrapper">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="newsletter-content">
+                        <h3>Subscribe to Our Newsletter</h3>
+                        <p>Get notified about new products, exclusive deals, and special offers!</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <form action="{{ url_for('subscribe') }}" method="POST" class="newsletter-form-big">
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control" placeholder="Enter your email address" required>
+                            <button class="btn btn-subscribe" type="submit">Subscribe <i class="fas fa-paper-plane ms-2"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Message Detail - AA MART Admin{% endblock %}
+{% block page_title %}Message from {{ message.name }}{% endblock %}
+
+{% block admin_content %}
+<div class="admin-card">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Name:</strong> {{ message.name }}</p>
+                <p><strong>Email:</strong> <a href="mailto:{{ message.email }}">{{ message.email }}</a></p>
+                {% if message.phone %}<p><strong>Phone:</strong> {{ message.phone }}</p>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <p><strong>Subject:</strong> {{ message.subject }}</p>
+                <p><strong>Date:</strong> {{ message.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+                <p><strong>Status:</strong> {% if message.is_read %}<span class="badge bg-success">Read</span>{% else %}<span class="badge bg-warning">Unread</span>{% endif %}</p>
+            </div>
+        </div>
+        <hr>
+        <div class="mt-3">
+            <h6>Message:</h6>
+            <p class="p-3 bg-light rounded">{{ message.message }}</p>
+        </div>
+        <div class="mt-3">
+            <a href="mailto:{{ message.email }}" class="btn btn-admin"><i class="fas fa-reply me-2"></i>Reply via Email</a>
+            <a href="{{ url_for('admin.messages') }}" class="btn btn-secondary">Back to Messages</a>
+            <a href="{{ url_for('admin.delete_message', id=message.id) }}" class="btn btn-danger" onclick="return confirm('Delete this message?')"><i class="fas fa-trash me-2"></i>Delete</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

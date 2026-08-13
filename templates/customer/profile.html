@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}My Profile - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>My Profile</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">Profile</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <img src="{{ url_for('static', filename='uploads/avatars/' + current_user.avatar) }}" alt="{{ current_user.full_name }}">
+                        <h5>{{ current_user.full_name or current_user.username }}</h5>
+                        <span class="text-muted">{{ current_user.email }}</span>
+                    </div>
+                    <ul class="profile-nav">
+                        <li><a href="{{ url_for('customer.profile') }}" class="active"><i class="fas fa-user"></i> My Profile</a></li>
+                        <li><a href="{{ url_for('customer.edit_profile') }}"><i class="fas fa-edit"></i> Edit Profile</a></li>
+                        <li><a href="{{ url_for('customer.change_password') }}"><i class="fas fa-lock"></i> Change Password</a></li>
+                        <li><a href="{{ url_for('customer.orders') }}"><i class="fas fa-box"></i> My Orders</a></li>
+                        <li><a href="{{ url_for('customer.addresses') }}"><i class="fas fa-map-marker-alt"></i> My Addresses</a></li>
+                        <li><a href="{{ url_for('products.wishlist') }}"><i class="fas fa-heart"></i> Wishlist</a></li>
+                        <li><a href="{{ url_for('customer.notifications') }}"><i class="fas fa-bell"></i> Notifications</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="profile-content">
+                    <h4>Profile Information</h4>
+                    <div class="profile-details">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Full Name</label>
+                                <p>{{ current_user.full_name or 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Username</label>
+                                <p>{{ current_user.username }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Email</label>
+                                <p>{{ current_user.email }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Phone</label>
+                                <p>{{ current_user.phone or 'N/A' }}</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Member Since</label>
+                                <p>{{ current_user.created_at.strftime('%d %b %Y') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

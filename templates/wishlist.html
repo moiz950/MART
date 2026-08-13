@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}My Wishlist - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container"><h1>My Wishlist</h1></div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        {% if wishlist_items %}
+        <div class="row g-3">
+            {% for item in wishlist_items %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename=item.product.get_primary_image()) }}" alt="{{ item.product.name }}">
+                        <div class="product-actions">
+                            <a href="{{ url_for('products.remove_from_wishlist', product_id=item.product.id) }}" class="action-btn" style="background: var(--danger); color: white;"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=item.product.slug) }}">{{ item.product.name }}</a></h6>
+                        <div class="product-price">
+                            <span class="current-price">Rs. {{ "%.2f"|format(item.product.discount_price or item.product.price) }}</span>
+                        </div>
+                        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-heart fa-5x text-muted mb-4"></i>
+            <h4>Your Wishlist is Empty</h4>
+            <p>Add items you love to your wishlist</p>
+            <a href="{{ url_for('products.shop') }}" class="btn btn-purple">Explore Products</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

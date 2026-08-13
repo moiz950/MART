@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.order_number }} - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>Order Details</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('customer.orders') }}">Orders</a></li>
+                <li class="breadcrumb-item active">#{{ order.order_number }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="order-detail-card">
+            <div class="order-detail-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4>Order #{{ order.order_number }}</h4>
+                        <p>Placed on {{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <span class="order-status-badge status-{{ order.status }}">{{ order.status|title }}</span>
+                        <a href="{{ url_for('customer.invoice', order_id=order.id) }}" class="btn btn-outline-purple btn-sm ms-2">
+                            <i class="fas fa-download me-1"></i>Invoice
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-tracking">
+                <div class="tracking-steps">
+                    <div class="track-step {% if order.status in ['confirmed', 'processing', 'packed', 'shipped', 'delivered'] %}completed{% endif %}">
+                        <i class="fas fa-check"></i>
+                        <span>Confirmed</span>
+                    </div>
+                    <div class="track-step {% if order.status in ['processing', 'packed', 'shipped', 'delivered'] %}completed{% endif %}">
+                        <i class="fas fa-cog"></i>
+                        <span>Processing</span>
+                    </div>
+                    <div class="track-step {% if order.status in ['packed', 'shipped', 'delivered'] %}completed{% endif %}">
+                        <i class="fas fa-box"></i>
+                        <span>Packed</span>
+                    </div>
+                    <div class="track-step {% if order.status in ['shipped', 'delivered'] %}completed{% endif %}">
+                        <i class="fas fa-truck"></i>
+                        <span>Shipped</span>
+                    </div>
+                    <div class="track-step {% if order.status == 'delivered' %}completed{% endif %}">
+                        <i class="fas fa-home"></i>
+                        <span>Delivered</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-items-list">
+                <h5>Order Items</h5>
+                {% for item in order.items %}
+                <div class="order-item-detail">
+                    <img src="{{ url_for('static', filename=item.product_image or 'default-product.png') }}" alt="{{ item.product_name }}">
+                    <div class="item-info">
+                        <h6>{{ item.product_name }}</h6>
+                        <span>SKU: {{ item.product_sku }}</span>
+                    </div>
+                    <div class="item-qty">Qty: {{ item.quantity }}</div>
+                    <div class="item-price">Rs. {{ "%.2f"|format(item.price) }}</div>
+                    <div class="item-total">Rs. {{ "%.2f"|format(item.total) }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="order-summary-box">
+                <h5>Order Summary</h5>
+                <div class="summary-line"><span>Subtotal</span><span>Rs. {{ "%.2f"|format(order.subtotal) }}</span></div>
+                {% if order.discount > 0 %}<div class="summary-line text-success"><span>Discount</span><span>-Rs. {{ "%.2f"|format(order.discount) }}</span></div>{% endif %}
+                <div class="summary-line"><span>Shipping</span><span>Rs. {{ "%.2f"|format(order.shipping_cost) }}</span></div>
+                <div class="summary-line"><span>Tax</span><span>Rs. {{ "%.2f"|format(order.tax) }}</span></div>
+                <div class="summary-line total"><span>Total</span><span>Rs. {{ "%.2f"|format(order.grand_total) }}</span></div>
+            </div>
+            
+            <div class="order-info-grid">
+                <div class="info-box">
+                    <h6>Shipping Address</h6>
+                    {% if order.shipping_address %}
+                    <p>{{ order.shipping_address.full_name }}<br>
+                    {{ order.shipping_address.address_line1 }}<br>
+                    {{ order.shipping_address.city }}, {{ order.shipping_address.state }}<br>
+                    Phone: {{ order.shipping_address.phone }}</p>
+                    {% else %}
+                    <p>No address on file</p>
+                    {% endif %}
+                </div>
+                <div class="info-box">
+                    <h6>Payment Info</h6>
+                    <p>Method: {{ order.payment_method|upper }}<br>
+                    Status: {{ order.payment_status|title }}<br>
+                    Amount: Rs. {{ "%.2f"|format(order.grand_total) }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Theme Settings - AA MART Admin{% endblock %}
+{% block page_title %}Theme Settings{% endblock %}
+
+{% block admin_content %}
+<div class="admin-card">
+    <div class="card-body">
+        <form method="POST" class="form-admin">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Primary Color</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-palette"></i></span>
+                        <input type="color" name="primary_color" class="form-control form-control-color" value="{{ settings.get('primary_color', '#6A1B9A') }}">
+                    </div>
+                    <small class="text-muted">Default: #6A1B9A (Purple)</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Secondary Color</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-palette"></i></span>
+                        <input type="color" name="secondary_color" class="form-control form-control-color" value="{{ settings.get('secondary_color', '#222222') }}">
+                    </div>
+                    <small class="text-muted">Default: #222222 (Black)</small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Accent Color</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-palette"></i></span>
+                    <input type="color" name="accent_color" class="form-control form-control-color" value="{{ settings.get('accent_color', '#FF6F00') }}">
+                </div>
+                <small class="text-muted">Default: #FF6F00 (Amber accent)</small>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Header Style</label>
+                    <select name="header_style" class="form-select">
+                        <option value="default" {% if settings.get('header_style') == 'default' %}selected{% endif %}>Default</option>
+                        <option value="minimal" {% if settings.get('header_style') == 'minimal' %}selected{% endif %}>Minimal</option>
+                        <option value="compact" {% if settings.get('header_style') == 'compact' %}selected{% endif %}>Compact</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Footer Style</label>
+                    <select name="footer_style" class="form-select">
+                        <option value="default" {% if settings.get('footer_style') == 'default' %}selected{% endif %}>Default</option>
+                        <option value="minimal" {% if settings.get('footer_style') == 'minimal' %}selected{% endif %}>Minimal</option>
+                        <option value="dark" {% if settings.get('footer_style') == 'dark' %}selected{% endif %}>Dark</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Custom CSS</label>
+                <textarea name="custom_css" class="form-control" rows="6" placeholder="/* Add custom CSS here */">{{ settings.get('custom_css', '') }}</textarea>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-admin"><i class="fas fa-save me-2"></i>Save Theme Settings</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

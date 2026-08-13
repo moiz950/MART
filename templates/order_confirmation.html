@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed - AA MART{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <div class="confirmation-box text-center">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Order Placed Successfully!</h2>
+            <p class="lead">Thank you for shopping with AA MART</p>
+            
+            <div class="order-details-box">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <span>Order Number</span>
+                            <strong>{{ order.order_number }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <span>Order Date</span>
+                            <strong>{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="detail-item">
+                            <span>Total Amount</span>
+                            <strong>Rs. {{ "%.2f"|format(order.grand_total) }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{{ url_for('customer.order_detail', order_id=order.id) }}" class="btn btn-purple btn-lg me-2">
+                    <i class="fas fa-eye me-2"></i>View Order
+                </a>
+                <a href="{{ url_for('products.shop') }}" class="btn btn-outline-purple btn-lg">
+                    <i class="fas fa-shopping-cart me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

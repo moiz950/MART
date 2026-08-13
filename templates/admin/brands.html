@@ -1,0 +1,46 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Brands - AA MART Admin{% endblock %}
+{% block page_title %}Brands Management{% endblock %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="{{ url_for('admin.add_brand') }}" class="btn btn-admin"><i class="fas fa-plus me-2"></i>Add Brand</a>
+</div>
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead>
+                <tr>
+                    <th>Logo</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Website</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for brand in brands %}
+                <tr>
+                    <td>
+                        {% if brand.logo %}
+                        <img src="{{ url_for('static', filename=brand.logo) }}" class="img-preview" style="width:40px;height:40px;object-fit:contain;">
+                        {% else %}
+                        <i class="fas fa-certificate fa-2x text-purple"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ brand.name }}</td>
+                    <td>{{ brand.slug }}</td>
+                    <td>{% if brand.website %}<a href="{{ brand.website }}" target="_blank">{{ brand.website }}</a>{% else %}—{% endif %}</td>
+                    <td><span class="badge bg-{{ 'success' if brand.is_active else 'danger' }}">{{ 'Active' if brand.is_active else 'Inactive' }}</span></td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_brand', id=brand.id) }}" class="btn btn-admin-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('admin.delete_brand', id=brand.id) }}" class="btn btn-admin-sm btn-danger" onclick="return confirm('Delete this brand?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

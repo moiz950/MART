@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Invoice #{{ order.order_number }} - AA MART{% endblock %}
+
+{% block content %}
+<div class="page-banner">
+    <div class="container">
+        <h1>Invoice</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('customer.orders') }}">Orders</a></li>
+                <li class="breadcrumb-item active">Invoice #{{ order.order_number }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="invoice-wrapper">
+            <div class="text-center mb-4">
+                <h2 class="text-purple">AA MART</h2>
+                <p>{{ settings.get('address', '') }}</p>
+                <p>{{ settings.get('phone', '') }} | {{ settings.get('email', '') }}</p>
+                <hr>
+            </div>
+            <div class="row mb-4">
+                <div class="col-6">
+                    <h6>Bill To:</h6>
+                    <p>{{ order.address.full_name or current_user.full_name }}</p>
+                    <p>{{ order.address.address_line1 if order.address else '' }}</p>
+                    {% if order.address %}<p>{{ order.address.city }}, {{ order.address.state }}</p>{% endif %}
+                    <p>{{ order.address.phone if order.address else current_user.phone }}</p>
+                </div>
+                <div class="col-6 text-end">
+                    <h6>Invoice #: {{ order.order_number }}</h6>
+                    <p>Date: {{ order.created_at.strftime('%d %b %Y') }}</p>
+                    <p>Status: <span class="badge bg-purple">{{ order.status|title }}</span></p>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead class="table-purple">
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>Rs. {{ "%.0f"|format(item.price) }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rs. {{ "%.0f"|format(item.price * item.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr><td colspan="4" class="text-end">Subtotal</td><td>Rs. {{ "%.0f"|format(order.subtotal) }}</td></tr>
+                    {% if order.discount > 0 %}<tr><td colspan="4" class="text-end">Discount</td><td>-Rs. {{ "%.0f"|format(order.discount) }}</td></tr>{% endif %}
+                    <tr><td colspan="4" class="text-end">Shipping</td><td>Rs. {{ "%.0f"|format(order.shipping) }}</td></tr>
+                    <tr><td colspan="4" class="text-end fw-bold">Grand Total</td><td class="fw-bold">Rs. {{ "%.0f"|format(order.grand_total) }}</td></tr>
+                </tfoot>
+            </table>
+            <div class="text-center mt-4">
+                <p class="text-muted">Thank you for shopping with AA MART!</p>
+                <button class="btn btn-purple" onclick="window.print()"><i class="fas fa-print me-2"></i>Print Invoice</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.invoice-wrapper {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    max-width: 800px;
+    margin: 0 auto;
+}
+.table-purple {
+    background: #6A1B9A;
+    color: #fff;
+}
+@media print {
+    .header-main, .footer-main, .page-banner, .btn { display: none !important; }
+    .invoice-wrapper { box-shadow: none; padding: 0; }
+}
+</style>
+{% endblock %}

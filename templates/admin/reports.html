@@ -1,0 +1,93 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Reports - AA MART Admin{% endblock %}
+{% block page_title %}Sales Reports{% endblock %}
+
+{% block admin_content %}
+<!-- Sales Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card purple">
+            <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+            <div class="stat-info">
+                <h3>Rs. {{ "%.0f"|format(today_sales) }}</h3>
+                <span>Today's Sales</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card blue">
+            <div class="stat-icon"><i class="fas fa-calendar-week"></i></div>
+            <div class="stat-info">
+                <h3>Rs. {{ "%.0f"|format(week_sales) }}</h3>
+                <span>This Week</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card green">
+            <div class="stat-icon"><i class="fas fa-calendar-month"></i></div>
+            <div class="stat-info">
+                <h3>Rs. {{ "%.0f"|format(month_sales) }}</h3>
+                <span>This Month</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="admin-card">
+            <div class="card-header"><h5 class="mb-0">Top Selling Products</h5></div>
+            <div class="card-body p-0">
+                <table class="table-admin">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in top_products %}
+                        <tr>
+                            <td>{{ product.name[:40] }}{% if product.name|length > 40 %}...{% endif %}</td>
+                            <td>{{ product.sales_count }}</td>
+                            <td>Rs. {{ "%.0f"|format(product.sales_count * product.price) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center py-4">No sales data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="admin-card">
+            <div class="card-header"><h5 class="mb-0">Top Customers</h5></div>
+            <div class="card-body p-0">
+                <table class="table-admin">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Orders</th>
+                            <th>Total Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer, order_count, total_spent in top_customers %}
+                        <tr>
+                            <td>{{ customer.full_name }}</td>
+                            <td>{{ order_count }}</td>
+                            <td>Rs. {{ "%.0f"|format(total_spent) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center py-4">No customer data</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

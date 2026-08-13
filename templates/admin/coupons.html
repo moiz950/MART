@@ -1,0 +1,30 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Coupons - AA MART Admin{% endblock %}
+{% block page_title %}Coupon Management{% endblock %}
+
+{% block admin_content %}
+<a href="{{ url_for('admin.add_coupon') }}" class="btn btn-admin mb-3"><i class="fas fa-plus me-2"></i>Add Coupon</a>
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Uses</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for coupon in coupons %}
+                <tr>
+                    <td><strong>{{ coupon.code }}</strong></td>
+                    <td>{{ coupon.discount_type }}</td>
+                    <td>{{ coupon.discount_value }}{% if coupon.discount_type == 'percentage' %}%{% else %} Rs.{% endif %}</td>
+                    <td>{{ coupon.used_count }}/{{ coupon.usage_limit }}</td>
+                    <td>{{ coupon.expires_at.strftime('%d %b %Y') if coupon.expires_at else 'No expiry' }}</td>
+                    <td><span class="badge bg-{{ 'success' if coupon.is_active else 'danger' }}">{{ 'Active' if coupon.is_active else 'Inactive' }}</span></td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_coupon', id=coupon.id) }}" class="btn btn-admin-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('admin.delete_coupon', id=coupon.id) }}" class="btn btn-admin-sm btn-danger" onclick="return confirm('Delete?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

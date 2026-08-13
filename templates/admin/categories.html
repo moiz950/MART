@@ -1,0 +1,28 @@
+{% extends 'admin/dashboard.html' %}
+{% block title %}Categories - AA MART Admin{% endblock %}
+{% block page_title %}Category Management{% endblock %}
+
+{% block admin_content %}
+<a href="{{ url_for('admin.add_category') }}" class="btn btn-admin mb-3"><i class="fas fa-plus me-2"></i>Add Category</a>
+<div class="admin-card">
+    <div class="card-body p-0">
+        <table class="table-admin">
+            <thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for cat in categories %}
+                <tr>
+                    <td><i class="fas {{ cat.icon }} me-2"></i>{{ cat.name }}</td>
+                    <td>{{ cat.slug }}</td>
+                    <td>{{ cat.products.count() }}</td>
+                    <td><span class="badge bg-{{ 'success' if cat.is_active else 'danger' }}">{{ 'Active' if cat.is_active else 'Inactive' }}</span></td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_category', id=cat.id) }}" class="btn btn-admin-sm"><i class="fas fa-edit"></i></a>
+                        <a href="{{ url_for('admin.delete_category', id=cat.id) }}" class="btn btn-admin-sm btn-danger" onclick="return confirm('Delete?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

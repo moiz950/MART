@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}Shop - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>Shop</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">Shop</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="filter-sidebar">
+                    <div class="filter-widget">
+                        <h5>Categories</h5>
+                        <ul class="filter-list">
+                            <li><a href="{{ url_for('products.shop') }}" class="{% if not request.args.get('category') %}active{% endif %}">All Categories</a></li>
+                            {% for cat in categories %}
+                            <li><a href="{{ url_for('products.shop') }}?category={{ cat.id }}" class="{% if request.args.get('category')|string == cat.id|string %}active{% endif %}">{{ cat.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="filter-widget">
+                        <h5>Brands</h5>
+                        <ul class="filter-list">
+                            <li><a href="{{ url_for('products.shop') }}">All Brands</a></li>
+                            {% for brand in brands %}
+                            <li><a href="{{ url_for('products.shop') }}?brand={{ brand.id }}">{{ brand.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="filter-widget">
+                        <h5>Price Range</h5>
+                        <form method="GET" action="{{ url_for('products.shop') }}">
+                            <div class="price-inputs">
+                                <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.args.get('min_price', '') }}">
+                                <span>-</span>
+                                <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.args.get('max_price', '') }}">
+                            </div>
+                            <button type="submit" class="btn btn-purple btn-sm w-100 mt-2">Filter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="shop-toolbar">
+                    <p>Showing {{ products.items|length }} of {{ products.total }} products</p>
+                    <div class="sort-dropdown">
+                        <select class="form-select" onchange="window.location.href=this.value">
+                            <option value="{{ url_for('products.shop', sort='newest', category=request.args.get('category')) }}" {% if request.args.get('sort', 'newest') == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="{{ url_for('products.shop', sort='oldest', category=request.args.get('category')) }}" {% if request.args.get('sort') == 'oldest' %}selected{% endif %}>Oldest</option>
+                            <option value="{{ url_for('products.shop', sort='price_low', category=request.args.get('category')) }}" {% if request.args.get('sort') == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="{{ url_for('products.shop', sort='price_high', category=request.args.get('category')) }}" {% if request.args.get('sort') == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="{{ url_for('products.shop', sort='popularity', category=request.args.get('category')) }}" {% if request.args.get('sort') == 'popularity' %}selected{% endif %}>Popularity</option>
+                            <option value="{{ url_for('products.shop', sort='rating', category=request.args.get('category')) }}" {% if request.args.get('sort') == 'rating' %}selected{% endif %}>Best Rating</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row g-3">
+                    {% for product in products.items %}
+                    <div class="col-lg-4 col-md-6 col-6">
+                        <div class="product-card">
+                            {% if product.is_new %}<div class="product-badge badge-new">New</div>{% endif %}
+                            {% if product.get_discount_percent() > 0 %}<div class="product-badge badge-discount">-{{ product.get_discount_percent() }}%</div>{% endif %}
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}" loading="lazy">
+                                <div class="product-actions">
+                                    <a href="{{ url_for('products.add_to_wishlist', product_id=product.id) }}" class="action-btn"><i class="fas fa-heart"></i></a>
+                                    <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn"><i class="fas fa-eye"></i></a>
+                                </div>
+                            </div>
+                            <div class="product-info">
+                                <span class="product-category">{{ product.category.name }}</span>
+                                <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name }}</a></h6>
+                                <div class="product-rating">
+                                    {% for i in range(5) %}
+                                    <i class="fas fa-star{% if i < product.rating|int %}{% else %} far fa-star{% endif %}"></i>
+                                    {% endfor %}
+                                    <span>({{ product.review_count }})</span>
+                                </div>
+                                <div class="product-price">
+                                    <span class="current-price">Rs. {{ "%.2f"|format(product.discount_price or product.price) }}</span>
+                                    {% if product.discount_price %}
+                                    <span class="old-price">Rs. {{ "%.2f"|format(product.price) }}</span>
+                                    {% endif %}
+                                </div>
+                                <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                        <h4>No Products Found</h4>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                {% if products.pages > 1 %}
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if products.has_prev %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('products.shop', page=products.prev_num, category=request.args.get('category'), brand=request.args.get('brand'), min_price=request.args.get('min_price'), max_price=request.args.get('max_price'), sort=request.args.get('sort')) }}"><i class="fas fa-chevron-left"></i></a></li>
+                        {% endif %}
+                        {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                        <li class="page-item {% if page_num == products.page %}active{% endif %}"><a class="page-link" href="{{ url_for('products.shop', page=page_num, category=request.args.get('category'), brand=request.args.get('brand'), min_price=request.args.get('min_price'), max_price=request.args.get('max_price'), sort=request.args.get('sort')) }}">{{ page_num }}</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if products.has_next %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('products.shop', page=products.next_num, category=request.args.get('category'), brand=request.args.get('brand'), min_price=request.args.get('min_price'), max_price=request.args.get('max_price'), sort=request.args.get('sort')) }}"><i class="fas fa-chevron-right"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

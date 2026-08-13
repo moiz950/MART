@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>Checkout</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('cart.view_cart') }}">Cart</a></li>
+                <li class="breadcrumb-item active">Checkout</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <form method="POST" action="{{ url_for('cart.checkout') }}">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="checkout-section">
+                        <h4><i class="fas fa-map-marker-alt me-2"></i>Shipping Address</h4>
+                        
+                        {% if addresses %}
+                        <div class="address-list mb-3">
+                            {% for addr in addresses %}
+                            <div class="address-card {% if addr.is_default %}selected{% endif %}">
+                                <label>
+                                    <input type="radio" name="shipping_address" value="{{ addr.id }}" {% if addr.is_default %}checked{% endif %} required>
+                                    <div class="address-details">
+                                        <strong>{{ addr.label }}</strong>
+                                        <p>{{ addr.address_line1 }}, {{ addr.city }}, {{ addr.state }} - {{ addr.zip_code }}</p>
+                                        <span>{{ addr.phone }}</span>
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <a href="{{ url_for('customer.add_address') }}" class="btn btn-outline-purple btn-sm mb-3">
+                            <i class="fas fa-plus me-2"></i>Add New Address
+                        </a>
+                        {% else %}
+                        <div class="alert alert-info">
+                            No address found. Please add a shipping address.
+                            <a href="{{ url_for('customer.add_address') }}" class="btn btn-purple btn-sm ms-3">Add Address</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="checkout-section">
+                        <h4><i class="fas fa-credit-card me-2"></i>Payment Method</h4>
+                        <div class="payment-methods">
+                            <div class="payment-option">
+                                <label>
+                                    <input type="radio" name="payment_method" value="cod" checked>
+                                    <div class="payment-details">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <div>
+                                            <strong>Cash on Delivery</strong>
+                                            <p>Pay when you receive the order</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <label>
+                                    <input type="radio" name="payment_method" value="card">
+                                    <div class="payment-details">
+                                        <i class="fas fa-credit-card"></i>
+                                        <div>
+                                            <strong>Card Payment</strong>
+                                            <p>Visa, Mastercard, Debit/Credit</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="payment-option">
+                                <label>
+                                    <input type="radio" name="payment_method" value="online">
+                                    <div class="payment-details">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <div>
+                                            <strong>Online Payment</strong>
+                                            <p>JazzCash, EasyPaisa, Bank Transfer</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="order-summary">
+                        <h5>Order Summary</h5>
+                        <div class="order-items">
+                            {% for item in cart_items %}
+                            <div class="order-item">
+                                <img src="{{ url_for('static', filename=item.product.get_primary_image()) }}" alt="{{ item.product.name }}">
+                                <div class="order-item-info">
+                                    <h6>{{ item.product.name }}</h6>
+                                    <span>Qty: {{ item.quantity }}</span>
+                                </div>
+                                <span class="order-item-price">Rs. {{ "%.2f"|format(item.get_total()) }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="summary-totals">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span>Rs. {{ "%.2f"|format(subtotal) }}</span>
+                            </div>
+                            {% if discount > 0 %}
+                            <div class="summary-row text-success">
+                                <span>Discount</span>
+                                <span>-Rs. {{ "%.2f"|format(discount) }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span>{% if shipping == 0 %}Free{% else %}Rs. {{ "%.2f"|format(shipping) }}{% endif %}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax</span>
+                                <span>Rs. {{ "%.2f"|format(tax) }}</span>
+                            </div>
+                            <div class="summary-row grand-total">
+                                <span>Total</span>
+                                <span>Rs. {{ "%.2f"|format(grand_total) }}</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-purple btn-lg w-100">
+                            <i class="fas fa-check-circle me-2"></i>Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

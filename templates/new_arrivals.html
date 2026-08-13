@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}New Arrivals - AA MART{% endblock %}
+
+{% block content %}
+<div class="page-banner">
+    <div class="container">
+        <h1>New Arrivals</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">New Arrivals</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">✨ New Arrivals</h2>
+            <p class="section-desc">Check out the latest products added to our store</p>
+        </div>
+        
+        {% if products and products.items %}
+        <div class="row g-4">
+            {% for product in products.items %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    <div class="product-badge">
+                        <span class="badge bg-purple">New</span>
+                    </div>
+                    <div class="product-image">
+                        <a href="{{ url_for('products.product_detail', slug=product.slug) }}">
+                            <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}">
+                        </a>
+                        <div class="product-actions">
+                            <a href="{{ url_for('products.add_to_wishlist', id=product.id) }}" class="action-btn"><i class="fas fa-heart"></i></a>
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">{{ product.category.name if product.category else '' }}</span>
+                        <h5><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name[:35] }}{% if product.name|length > 35 %}...{% endif %}</a></h5>
+                        <div class="product-price">
+                            <span class="current-price">Rs. {{ "%.0f"|format(product.discount_price or product.price) }}</span>
+                            {% if product.discount_price %}<span class="old-price">Rs. {{ "%.0f"|format(product.price) }}</span>{% endif %}
+                        </div>
+                        <div class="product-rating">
+                            {% for i in range(5) %}<i class="fas fa-star{% if i < product.rating %}{% else %}-o{% endif %}"></i>{% endfor %}
+                            <span>({{ product.reviews|length }})</span>
+                        </div>
+                        <a href="{{ url_for('cart.add_to_cart', id=product.id) }}" class="btn btn-purple w-100 mt-2"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if products.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('products.new_arrivals', page=products.prev_num) }}">Previous</a></li>
+                {% endif %}
+                {% for page_num in products.iter_pages() %}
+                <li class="page-item {% if page_num == products.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('products.new_arrivals', page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endfor %}
+                {% if products.has_next %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('products.new_arrivals', page=products.next_num) }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+            <h4>No new arrivals yet</h4>
+            <p>Check back soon for new products!</p>
+            <a href="{{ url_for('products.shop') }}" class="btn btn-purple">Shop All Products</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

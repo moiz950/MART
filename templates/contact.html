@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">Contact</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="contact-form-wrapper">
+                    <h4>Send us a Message</h4>
+                    <form method="POST" action="{{ url_for('contact') }}">
+                        {{ form.hidden_tag() }}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Name</label>
+                                {{ form.name(class="form-control", placeholder="Your name") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Email</label>
+                                {{ form.email(class="form-control", placeholder="Your email") }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Phone</label>
+                                {{ form.phone(class="form-control", placeholder="Your phone") }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Subject</label>
+                                {{ form.subject(class="form-control", placeholder="Subject") }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Message</label>
+                            {{ form.message(class="form-control", rows="5", placeholder="Your message") }}
+                        </div>
+                        <button type="submit" class="btn btn-purple">Send Message <i class="fas fa-paper-plane ms-2"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h6>Address</h6>
+                            <p>AA MART, Karachi, Pakistan</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h6>Phone</h6>
+                            <p>021-111-AA-MART</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h6>Email</h6>
+                            <p>info@aamart.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h6>Working Hours</h6>
+                            <p>Mon - Sat: 9:00 AM - 10:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

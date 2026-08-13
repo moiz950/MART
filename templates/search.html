@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Search Results - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>Search Results</h1>
+        <p>Showing results for "{{ query }}"</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row g-3">
+            {% for product in products.items %}
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="product-card">
+                    {% if product.get_discount_percent() > 0 %}<div class="product-badge badge-discount">-{{ product.get_discount_percent() }}%</div>{% endif %}
+                    <div class="product-image">
+                        <img src="{{ url_for('static', filename=product.get_primary_image()) }}" alt="{{ product.name }}" loading="lazy">
+                        <div class="product-actions">
+                            <a href="{{ url_for('products.add_to_wishlist', product_id=product.id) }}" class="action-btn"><i class="fas fa-heart"></i></a>
+                            <a href="{{ url_for('products.product_detail', slug=product.slug) }}" class="action-btn"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h6 class="product-name"><a href="{{ url_for('products.product_detail', slug=product.slug) }}">{{ product.name }}</a></h6>
+                        <div class="product-price">
+                            <span class="current-price">Rs. {{ "%.2f"|format(product.discount_price or product.price) }}</span>
+                            {% if product.discount_price %}<span class="old-price">Rs. {{ "%.2f"|format(product.price) }}</span>{% endif %}
+                        </div>
+                        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-add-cart w-100"><i class="fas fa-shopping-cart me-2"></i>Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                <h4>No products found for "{{ query }}"</h4>
+                <p>Try different keywords or browse categories</p>
+                <a href="{{ url_for('products.shop') }}" class="btn btn-purple">Browse Products</a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if products.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% for page_num in products.iter_pages() %}
+                {% if page_num %}
+                <li class="page-item {% if page_num == products.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('search', q=query, page=page_num) }}">{{ page_num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

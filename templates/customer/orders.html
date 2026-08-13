@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}My Orders - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>My Orders</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">Orders</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <img src="{{ url_for('static', filename='uploads/avatars/' + current_user.avatar) }}" alt="{{ current_user.full_name }}">
+                        <h5>{{ current_user.full_name or current_user.username }}</h5>
+                    </div>
+                    <ul class="profile-nav">
+                        <li><a href="{{ url_for('customer.profile') }}"><i class="fas fa-user"></i> My Profile</a></li>
+                        <li><a href="{{ url_for('customer.orders') }}" class="active"><i class="fas fa-box"></i> My Orders</a></li>
+                        <li><a href="{{ url_for('customer.addresses') }}"><i class="fas fa-map-marker-alt"></i> My Addresses</a></li>
+                        <li><a href="{{ url_for('products.wishlist') }}"><i class="fas fa-heart"></i> Wishlist</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="profile-content">
+                    <h4>Order History</h4>
+                    {% if orders.items %}
+                    <div class="orders-list">
+                        {% for order in orders.items %}
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <strong>Order #{{ order.order_number }}</strong>
+                                    <span class="text-muted ms-3">{{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+                                </div>
+                                <div class="order-status status-{{ order.status }}">
+                                    {{ order.status|title }}
+                                </div>
+                            </div>
+                            <div class="order-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <p>{{ order.items.count() }} item(s) - Rs. {{ "%.2f"|format(order.grand_total) }}</p>
+                                        <p class="text-muted">Payment: {{ order.payment_method|upper }} - {{ order.payment_status|title }}</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <a href="{{ url_for('customer.order_detail', order_id=order.id) }}" class="btn btn-purple btn-sm">View Details</a>
+                                        <a href="{{ url_for('customer.invoice', order_id=order.id) }}" class="btn btn-outline-purple btn-sm">Invoice</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if orders.pages > 1 %}
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if orders.has_prev %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('customer.orders', page=orders.prev_num) }}"><i class="fas fa-chevron-left"></i></a></li>
+                            {% endif %}
+                            {% for page_num in orders.iter_pages() %}
+                            {% if page_num %}
+                            <li class="page-item {% if page_num == orders.page %}active{% endif %}"><a class="page-link" href="{{ url_for('customer.orders', page=page_num) }}">{{ page_num }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if orders.has_next %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('customer.orders', page=orders.next_num) }}"><i class="fas fa-chevron-right"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    {% else %}
+                    <div class="empty-state text-center py-5">
+                        <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                        <h5>No orders yet</h5>
+                        <p>Start shopping to see your orders here</p>
+                        <a href="{{ url_for('products.shop') }}" class="btn btn-purple">Start Shopping</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

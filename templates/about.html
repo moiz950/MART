@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}About Us - AA MART{% endblock %}
+
+{% block content %}
+<section class="page-banner">
+    <div class="container">
+        <h1>About Us</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item active">About</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4">
+                <div class="about-image">
+                    <i class="fas fa-shopping-cart" style="font-size: 200px; color: var(--primary-lighter); opacity: 0.3;"></i>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h2>Welcome to AA MART</h2>
+                <p>AA MART is a premier online shopping destination that brings you a vast selection of products ranging from daily groceries to the latest electronics, fashion, home essentials, and much more. We are committed to providing our customers with a seamless, secure, and enjoyable shopping experience.</p>
+                <p>Our mission is to make quality products accessible to everyone at the best possible prices. With our user-friendly platform, secure payment options, and fast delivery, we strive to exceed your expectations every time you shop with us.</p>
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="about-stat">
+                            <h3>10K+</h3>
+                            <p>Products</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="about-stat">
+                            <h3>50K+</h3>
+                            <p>Happy Customers</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="about-stat">
+                            <h3>100+</h3>
+                            <p>Brands</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

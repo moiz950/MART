@@ -1,0 +1,149 @@
+<!-- Top Bar -->
+<div class="top-bar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <span class="top-bar-text"><i class="fas fa-phone-alt"></i> 021-111-AA-MART</span>
+                <span class="top-bar-text ms-3"><i class="fas fa-envelope"></i> info@aamart.com</span>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <span class="top-bar-text"><i class="fas fa-truck"></i> Free Delivery on Orders above Rs.500</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Header -->
+<header class="main-header" id="mainHeader">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-2 col-md-3 col-6">
+                <a href="{{ url_for('index') }}" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-title">AA</span>
+                        <span class="logo-subtitle">MART</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-6 col-md-4 d-none d-md-block">
+                <form action="{{ url_for('search') }}" method="GET" class="search-form">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control search-input" placeholder="Search for products..." value="{{ request.args.get('q', '') }}">
+                        <button class="btn btn-search" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4 col-md-5 col-6">
+                <div class="header-actions">
+                    {% if current_user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="btn btn-user dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i>
+                            <span class="d-none d-lg-inline">{{ current_user.full_name or current_user.username }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('customer.profile') }}"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.orders') }}"><i class="fas fa-box"></i> My Orders</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('products.wishlist') }}"><i class="fas fa-heart"></i> Wishlist {% if wishlist_count %}<span class="badge bg-purple">{{ wishlist_count }}</span>{% endif %}</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('customer.notifications') }}"><i class="fas fa-bell"></i> Notifications</a></li>
+                            {% if current_user.is_admin %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-user">
+                        <i class="fas fa-user"></i>
+                        <span class="d-none d-lg-inline">Login</span>
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{{ url_for('products.wishlist') }}" class="btn btn-icon position-relative">
+                        <i class="fas fa-heart"></i>
+                        {% if wishlist_count > 0 %}
+                        <span class="badge bg-purple badge-icon">{{ wishlist_count }}</span>
+                        {% endif %}
+                    </a>
+                    
+                    <a href="{{ url_for('cart.view_cart') }}" class="btn btn-icon position-relative">
+                        <i class="fas fa-shopping-bag"></i>
+                        {% if cart_count > 0 %}
+                        <span class="badge bg-purple badge-icon">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg main-nav">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="fas fa-th-large"></i> Categories
+                    </a>
+                    <ul class="dropdown-menu mega-menu">
+                        <div class="row">
+                            {% for cat in categories %}
+                            <div class="col-md-3 col-sm-6 mb-3">
+                                <a href="{{ url_for('products.category', slug=cat.slug) }}" class="mega-menu-item">
+                                    <i class="fas {{ cat.icon or 'fa-tag' }}"></i>
+                                    <span>{{ cat.name }}</span>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('products.shop') }}"><i class="fas fa-store"></i> Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('products.deals') }}"><i class="fas fa-fire"></i> Deals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('products.new_arrivals') }}"><i class="fas fa-clock"></i> New Arrivals</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('products.best_sellers') }}"><i class="fas fa-star"></i> Best Sellers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('brands') }}"><i class="fas fa-certificate"></i> Brands</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about') }}"><i class="fas fa-info-circle"></i> About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('contact') }}"><i class="fas fa-envelope"></i> Contact</a>
+                </li>
+            </ul>
+            
+            <!-- Mobile Search -->
+            <form action="{{ url_for('search') }}" method="GET" class="d-lg-none mt-2">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search products...">
+                    <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>

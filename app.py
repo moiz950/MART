@@ -21,6 +21,40 @@ login_manager.login_view = 'auth.login'
 login_manager.login_message_category = 'info'
 mail = Mail(app)
 
+# Ensure the instance folder exists and create all tables.
+# This runs at import time so it works under WSGI (PythonAnywhere),
+# where the `if __name__ == '__main__'` block never executes.
+with app.app_context():
+    db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    db.create_all()
+    # Create admin user if not exists
+    if not User.query.filter_by(email='admin@aamart.com').first():
+        admin = User(
+            username='admin',
+            email='admin@aamart.com',
+            full_name='Admin',
+            is_admin=True,
+            is_verified=True
+        )
+        admin.set_password('admin123')
+        db.session.add(admin)
+        db.session.commit()
+        print('Admin user created: admin@aamart.com / admin123')
+    # Create default categories
+    if not Category.query.first():
+        categories_data = [
+            'Grocery', 'Bakery', 'Fresh Food', 'Men', 'Women', 'Kids',
+            'Electronics', 'Mobile Accessories', 'Computer Accessories',
+            'Household', 'Beauty', 'Health', 'Sports', 'Toys & Games',
+            'Office', 'Pet Supplies'
+        ]
+        for name in categories_data:
+            cat = Category(name=name, slug=name.lower().replace(' ', '-'))
+            db.session.add(cat)
+        db.session.commit()
+        print('Default categories created')
+
 # Context Processors
 @app.context_processor
 def inject_globals():
@@ -201,32 +235,4 @@ def brands():
     return render_template('brands.html', brands=all_brands)
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        # Create admin user if not exists
-        if not User.query.filter_by(email='admin@aamart.com').first():
-            admin = User(
-                username='admin',
-                email='admin@aamart.com',
-                full_name='Admin',
-                is_admin=True,
-                is_verified=True
-            )
-            admin.set_password('admin123')
-            db.session.add(admin)
-            db.session.commit()
-            print('Admin user created: admin@aamart.com / admin123')
-        # Create default categories
-        if not Category.query.first():
-            categories_data = [
-                'Grocery', 'Bakery', 'Fresh Food', 'Men', 'Women', 'Kids',
-                'Electronics', 'Mobile Accessories', 'Computer Accessories',
-                'Household', 'Beauty', 'Health', 'Sports', 'Toys & Games',
-                'Office', 'Pet Supplies'
-            ]
-            for name in categories_data:
-                cat = Category(name=name, slug=name.lower().replace(' ', '-'))
-                db.session.add(cat)
-            db.session.commit()
-            print('Default categories created')
     app.run(debug=True, host='0.0.0.0', port=5000)
